@@ -2,6 +2,7 @@ package com.example.zenmind_ai.data.api
 
 import com.example.zenmind_ai.data.model.GeminiRequest
 import com.example.zenmind_ai.data.model.GeminiResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -12,5 +13,5 @@ interface GeminiApiService {
     suspend fun generateContent(
         @Query("key") apiKey: String,
         @Body request: GeminiRequest
-    ): GeminiResponse
+    ): Response<GeminiResponse>
 }

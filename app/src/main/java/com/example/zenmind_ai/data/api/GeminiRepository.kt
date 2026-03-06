@@ -24,12 +24,23 @@ class GeminiRepository @Inject constructor(
                 )
             )
 
+            val apiKey = BuildConfig.GEMINI_API_KEY
+            if (apiKey.isBlank()) {
+                return Result.failure(Exception("Gemini API key is not configured. Add GEMINI_API_KEY to local.properties."))
+            }
+
             val response = apiService.generateContent(
-                apiKey = BuildConfig.GEMINI_API_KEY,
+                apiKey = apiKey,
                 request = request
             )
 
-            val text = response.candidates
+            if (!response.isSuccessful) {
+                val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                return Result.failure(Exception("API error ${response.code()}: $errorBody"))
+            }
+
+            val body = response.body()
+            val text = body?.candidates
                 ?.firstOrNull()
                 ?.content
                 ?.parts
